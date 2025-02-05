@@ -1,27 +1,31 @@
-import express from "express";
-import dotenv from "dotenv";
-import usersRouter from "./routes/users.js";
-import productsRouter from "./routes/products.js";
+import app from "./app.js";
+import sequelize from "./config/database.js"; // Mengimpor instance sequelize
 
-dotenv.config();
-const port =
-  process.env.APP_ENV === "production"
-    ? process.env.PROD_PORT
-    : process.env.DEV_PORT;
+const PORT =
+  process.env.APP_ENV === "development"
+    ? process.env.DEV_PORT
+    : process.env.PROD_PORT;
 
-const app = express();
+// Memeriksa koneksi ke database
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Database connected successfully.");
 
-// root route
-app.get("/", (req, res) => {
-  res.send("<h1>Hello World</h1>");
-});
-
-// users route
-app.use("/users", usersRouter);
-
-// products route
-app.use("/products", productsRouter);
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+    // Menyinkronkan model dengan database
+    sequelize
+      .sync()
+      .then(() => {
+        console.log("Database synced successfully.");
+        // Mulai server setelah sync selesai
+        app.listen(PORT, () => {
+          console.log(`Server running on port ${PORT}`);
+        });
+      })
+      .catch((err) => {
+        console.error("Error syncing database:", err);
+      });
+  })
+  .catch((err) => {
+    console.error("Unable to connect to the database:", err);
+  });

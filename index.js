@@ -1,48 +1,75 @@
-// Sequelize setup
 import { Sequelize, Model, DataTypes } from "sequelize";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt"; // Make sure bcrypt is imported
 
 dotenv.config();
 
-// Uncomment this for file-based SQLite
+// Sequelize setup for database connection
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
   process.env.DB_PASSWORD,
   {
     host: "localhost",
-    dialect: process.env.DB_DIALECT,
+    dialect: process.env.DB_DIALECT, // e.g., 'mysql', 'postgres', etc.
   }
 );
 
-console.log(`Your port is ${process.env.PORT}`); // undefined
-
+// Define User model
 class User extends Model {}
+
 User.init(
   {
-    username: DataTypes.STRING,
-    birthday: DataTypes.DATE,
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
-  { sequelize, modelName: "user" }
+  {
+    sequelize, // Pass the sequelize instance
+    modelName: "User",
+  }
 );
 
+// Async function to handle database operations
 (async () => {
-  // Synchronize the database
-  await sequelize.sync();
+  try {
+    // Synchronize the database (creates tables if not exist)
+    await sequelize.sync();
 
-  // Delete all users
-  const deleteAllUsers = await User.destroy({
-    truncate: true,
-  });
+    // Delete all users (if you need to truncate the table)
+    const deleteAllUsers = await User.destroy({
+      truncate: true,
+    });
 
-  console.log("Deleted all users:", deleteAllUsers);
+    console.log("Deleted all users:", deleteAllUsers);
 
-  // Create a new user
-  const jane = await User.create({
-    username: "janedoe",
-    birthday: new Date(1980, 6, 20),
-  });
+    // Create a new user
+    const jane = await User.create({
+      firstName: "janedoe",
+      lastName: "jane",
+      email: "jane@doe",
+      password: bcrypt.hashSync("password", 10),
+    });
 
-  // Log created user to the console
-  console.log("Created user:", jane.toJSON());
+    console.log("Created user:", jane.toJSON());
+  } catch (error) {
+    console.error("Error:", error);
+  } finally {
+    // Close the Sequelize connection after operations
+    await sequelize.close();
+  }
 })();
