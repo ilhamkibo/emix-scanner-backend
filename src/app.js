@@ -1,7 +1,7 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import router from "./routes/v1/index.js";
+const express = require("express");
+const dotenv = require("dotenv");
+const router = require("./routes/v1/index.js");
+const cors = require("cors");
 
 dotenv.config();
 
@@ -12,4 +12,4 @@ app.use(express.json());
 
 app.use("/api/v1", router);
 
-export default app;
+module.exports = app;
