@@ -2,15 +2,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Transactions", {
+    await queryInterface.createTable("MaterialPacks", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      barcodeNumber: {
+      batch_id: {
+        type: Sequelize.INTEGER,
+      },
+      pack_code: {
         type: Sequelize.STRING,
+      },
+      quantity: {
+        type: Sequelize.DECIMAL,
+      },
+      isUsed: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,
@@ -23,6 +32,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Transactions");
+    await queryInterface.dropTable("MaterialPacks");
   },
 };

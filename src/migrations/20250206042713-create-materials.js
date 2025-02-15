@@ -12,13 +12,7 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      type: {
-        type: Sequelize.STRING,
-      },
-      quantity: {
-        type: Sequelize.INTEGER,
-      },
-      code: {
+      unit: {
         type: Sequelize.STRING,
       },
       createdAt: {

@@ -13,17 +13,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   Materials.init(
     {
-      name: DataTypes.STRING,
       name: {
         type: DataTypes.STRING,
       },
-      type: {
-        type: DataTypes.STRING,
-      },
-      quantity: {
-        type: DataTypes.INTEGER,
-      },
-      code: {
+      unit: {
         type: DataTypes.STRING,
       },
     },
