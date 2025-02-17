@@ -18,6 +18,9 @@ module.exports = {
       batch_code: {
         type: Sequelize.STRING,
       },
+      total_pack: {
+        type: Sequelize.INTEGER,
+      },
       purchase_date: {
         type: Sequelize.DATE,
       },

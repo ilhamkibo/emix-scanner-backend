@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      MaterialPack.belongsTo(models.MaterialBatch, {
+        foreignKey: "batch_id",
+        as: "batch",
+      });
     }
   }
   MaterialPack.init(

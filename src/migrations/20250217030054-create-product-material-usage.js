@@ -2,14 +2,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("CakeMaterialUsages", {
+    await queryInterface.createTable("ProductMaterialUsages", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      cake_id: {
+      product_id: {
         type: Sequelize.INTEGER,
       },
       pack_id: {
@@ -26,6 +26,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("CakeMaterialUsages");
+    await queryInterface.dropTable("ProductMaterialUsages");
   },
 };

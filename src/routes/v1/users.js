@@ -15,8 +15,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/101", (req, res) => {
-  res.send("This is user 101 route!");
+router.get("/:id", (req, res) => {
+  const userId = req.params.id;
+  res.send(`This is user ${userId} route!`);
 });
 
 router.get("/102", (req, res) => {

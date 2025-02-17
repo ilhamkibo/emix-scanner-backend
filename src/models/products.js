@@ -8,7 +8,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Products memiliki banyak Recipe
+      Products.hasMany(models.Recipe, {
+        foreignKey: "product_id",
+        as: "recipes",
+      });
     }
   }
   Products.init(
@@ -20,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       description: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {

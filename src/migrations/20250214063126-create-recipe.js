@@ -9,14 +9,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      cake_id: {
+      product_id: {
         type: Sequelize.INTEGER,
       },
       material_id: {
         type: Sequelize.INTEGER,
       },
       quantity: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.DECIMAL(10, 2),
       },
       createdAt: {
         allowNull: false,

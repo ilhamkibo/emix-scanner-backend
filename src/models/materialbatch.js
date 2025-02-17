@@ -9,6 +9,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      MaterialBatch.belongsTo(models.Materials, {
+        foreignKey: "material_id",
+        as: "material",
+      });
+
+      MaterialBatch.hasMany(models.MaterialPack, {
+        foreignKey: "batch_id",
+        as: "pack",
+      });
     }
   }
   MaterialBatch.init(
@@ -16,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       material_id: DataTypes.INTEGER,
       quantity: DataTypes.DECIMAL,
       batch_code: DataTypes.STRING,
+      total_pack: DataTypes.INTEGER,
       purchase_date: DataTypes.DATE,
     },
     {

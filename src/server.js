@@ -45,7 +45,7 @@ const findAvailablePort = async (port) => {
     const port = await findAvailablePort(DEFAULT_PORT);
 
     app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
+      console.log(`Server running on: http://localhost:${port}`);
     });
   } catch (err) {
     console.error("Unable to connect to the database or start server:", err);

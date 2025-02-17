@@ -8,14 +8,24 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Recipe berelasi dengan satu Product
+      Recipe.belongsTo(models.Products, {
+        foreignKey: "product_id",
+        as: "product",
+      });
+
+      // Recipe berelasi dengan satu Material
+      Recipe.belongsTo(models.Materials, {
+        foreignKey: "material_id",
+        as: "material",
+      });
     }
   }
   Recipe.init(
     {
-      cake_id: DataTypes.INTEGER,
+      product_id: DataTypes.INTEGER,
       material_id: DataTypes.INTEGER,
-      quantity: DataTypes.DECIMAL,
+      quantity: DataTypes.DECIMAL(10, 2),
     },
     {
       sequelize,

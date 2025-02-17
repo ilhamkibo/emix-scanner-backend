@@ -8,7 +8,20 @@ router.get("/", async (req, res) => {
   try {
     // Logic to fetch products
 
-    const response = await Products.findAll();
+    const response = await Products.findAll({
+      include: [
+        {
+          model: sequelize.models.Recipe,
+          as: "recipes",
+          include: [
+            {
+              model: sequelize.models.Materials,
+              as: "material",
+            },
+          ],
+        },
+      ],
+    });
     const products = response.map((product) => product.toJSON());
 
     // Send response
