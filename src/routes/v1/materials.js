@@ -15,12 +15,15 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/101", (req, res) => {
-  res.send("This is material 101 route!");
-});
-
-router.get("/102", (req, res) => {
-  res.send("This is material 102 route!");
+router.post("/", async (req, res) => {
+  try {
+    const { name, unit } = req.body;
+    const newMaterial = await Materials.create({ name, unit });
+    res.status(201).json(newMaterial);
+  } catch (error) {
+    console.error("Error creating material:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 module.exports = router;
