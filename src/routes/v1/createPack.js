@@ -81,18 +81,19 @@ router.get("/:batchCode", async (req, res) => {
   }
 });
 
-router.post("/generate/:batchId", async (req, res) => {
+router.post("/generate/:batchCode", async (req, res) => {
   try {
-    const { batchId } = req.params;
+    const { batchCode } = req.params;
     const { packIndex } = req.body; // index pack yang akan dicetak
-    console.log(req.params, req.body);
     // Pastikan packIndex adalah angka
     const parsedPackIndex = parseInt(packIndex);
     if (isNaN(parsedPackIndex)) {
       return res.status(400).json({ error: "Invalid pack index" });
     }
 
-    const batch = await MaterialBatch.findByPk(batchId);
+    const batch = await MaterialBatch.findOne({
+      where: { batch_code: batchCode },
+    });
 
     if (!batch) {
       return res.status(404).json({ error: "Batch not found" });
@@ -101,11 +102,11 @@ router.post("/generate/:batchId", async (req, res) => {
     const { batch_code, quantity, total_pack } = batch;
     const packQuantity = quantity / total_pack;
 
-    if (parsedPackIndex >= total_pack) {
+    if (parsedPackIndex > total_pack || parsedPackIndex < 1) {
       return res.status(400).json({ error: "Invalid pack index" });
     }
 
-    const packCode = `${batch_code}-P${parsedPackIndex + 1}`;
+    const packCode = `${batch_code}-P${parsedPackIndex}`;
 
     // Simulate barcode printing process
     console.log(
@@ -114,7 +115,7 @@ router.post("/generate/:batchId", async (req, res) => {
 
     res.json({
       message: "Barcode generated",
-      pack: { packCode, quantity: packQuantity },
+      pack: { packCode, quantity: packQuantity, total_pack },
     });
   } catch (error) {
     console.error("Error generating barcode:", error);

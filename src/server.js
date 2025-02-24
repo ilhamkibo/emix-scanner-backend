@@ -1,6 +1,10 @@
 const { app, broadcastToWebSocketClients } = require("./app");
 const sequelize = require("./config/database");
 const { net, createTCPClient } = require("./config/tcpClient");
+const {
+  initializeSocketIo,
+  broadcastToSocketClients,
+} = require("./config/socketIo");
 
 const DEFAULT_PORT =
   process.env.NODE_ENV === "development"
@@ -44,6 +48,14 @@ const findAvailablePort = async (port) => {
 
     const port = await findAvailablePort(DEFAULT_PORT);
 
+    // Start Server
+    const server = app.listen(port, () => {
+      console.log(`Server running on: http://localhost:${port}`);
+    });
+
+    // Socket.IO Setup
+    // initializeSocketIo(server);
+
     // TCP Client Setup
     createTCPClient((data) => {
       const weightValue = data.toString().trim();
@@ -53,12 +65,10 @@ const findAvailablePort = async (port) => {
       // console.log("Received weight value:", parsedWeight);
 
       // Broadcast weight value to WebSocket clients
-      broadcastToWebSocketClients(JSON.stringify({ weight: parsedWeight }));
-    });
-
-    // Start Server
-    app.listen(port, () => {
-      console.log(`Server running on: http://localhost:${port}`);
+      broadcastToWebSocketClients(
+        JSON.stringify({ weight: parsedWeight, type: "weightUpdate" })
+      );
+      // broadcastToSocketClients("weight", parsedWeight);
     });
   } catch (err) {
     console.error("Unable to connect to the database or start server:", err);
