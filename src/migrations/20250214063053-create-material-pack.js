@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       quantity: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.DECIMAL(10, 2),
       },
       isUsed: {
         type: Sequelize.BOOLEAN,

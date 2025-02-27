@@ -2,27 +2,18 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("MaterialBatches", {
+    await queryInterface.createTable("BomLists", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      material_id: {
-        type: Sequelize.INTEGER,
-      },
-      quantity: {
-        type: Sequelize.DECIMAL(10, 2),
-      },
-      batch_code: {
+      bom_code: {
         type: Sequelize.STRING,
       },
-      total_pack: {
+      product_id: {
         type: Sequelize.INTEGER,
-      },
-      purchase_date: {
-        type: Sequelize.DATE,
       },
       createdAt: {
         allowNull: false,
@@ -35,6 +26,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("MaterialBatches");
+    await queryInterface.dropTable("BomLists");
   },
 };

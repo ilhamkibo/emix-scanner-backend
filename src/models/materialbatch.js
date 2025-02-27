@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   MaterialBatch.init(
     {
       material_id: DataTypes.INTEGER,
-      quantity: DataTypes.DECIMAL,
+      quantity: DataTypes.DECIMAL(10, 2),
       batch_code: DataTypes.STRING,
       total_pack: DataTypes.INTEGER,
       purchase_date: DataTypes.DATE,
