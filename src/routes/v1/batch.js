@@ -1,8 +1,6 @@
 const express = require("express");
 const { sequelize } = require("../../models");
-const { parse } = require("dotenv");
 const MaterialBatch = sequelize.models.MaterialBatch;
-const MaterialPack = sequelize.models.MaterialPack;
 
 const router = express.Router();
 
@@ -77,28 +75,6 @@ router.get("/:batchCode", async (req, res) => {
     res.json(batch);
   } catch (error) {
     console.error("Error fetching batch:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-router.post("/save-pack-code", async (req, res) => {
-  try {
-    const { batch_id, pack_code, quantity } = req.body;
-
-    const pack = await MaterialPack.create({
-      batch_id,
-      pack_code,
-      quantity,
-      isUsed: false,
-    });
-
-    if (!pack) {
-      return res.status(500).json({ error: "Failed to insert pack code" });
-    }
-
-    res.status(200).json({ message: "Pack code inserted successfully", pack });
-  } catch (error) {
-    console.error("Error generating barcode:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

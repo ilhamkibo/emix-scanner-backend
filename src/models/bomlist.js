@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      BomList.belongsTo(models.Products, {
+        foreignKey: "product_id",
+        as: "product",
+      });
     }
   }
   BomList.init(
