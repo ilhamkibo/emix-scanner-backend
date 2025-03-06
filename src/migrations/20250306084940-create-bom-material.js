@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("ProductMaterialUsages", {
+    await queryInterface.createTable("BomMaterials", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,8 +12,11 @@ module.exports = {
       bom_id: {
         type: Sequelize.INTEGER,
       },
-      pack_id: {
+      material_id: {
         type: Sequelize.INTEGER,
+      },
+      required_qty: {
+        type: Sequelize.DECIMAL(10, 2),
       },
       createdAt: {
         allowNull: false,
@@ -26,6 +29,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("ProductMaterialUsages");
+    await queryInterface.dropTable("BomMaterials");
   },
 };

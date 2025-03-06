@@ -4,6 +4,31 @@ const MaterialPack = sequelize.models.MaterialPack;
 
 const router = express.Router();
 
+router.get("/:packCode", async (req, res) => {
+  try {
+    const { packCode } = req.params;
+    const response = await MaterialPack.findOne({
+      where: { pack_code: packCode },
+      include: [
+        {
+          model: sequelize.models.MaterialBatch,
+          as: "batch",
+          include: ["material"],
+        },
+      ],
+    });
+
+    if (!response) {
+      return res.status(404).json({ error: "Pack code not found" });
+    }
+
+    res.json(response);
+  } catch (error) {
+    console.error("Error fetching pack code:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const { batch_id, pack_code, quantity } = req.body;
