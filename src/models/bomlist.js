@@ -13,6 +13,18 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "product_id",
         as: "product",
       });
+      BomList.hasMany(models.BomMaterial, {
+        foreignKey: "bom_id",
+        as: "bommaterial",
+      });
+      BomList.hasMany(models.BomPack, {
+        foreignKey: "bom_id",
+        as: "bompack",
+      });
+      BomList.hasMany(models.ProductMaterialUsage, {
+        foreignKey: "bom_id",
+        as: "productmaterialusage",
+      });
     }
   }
   BomList.init(
