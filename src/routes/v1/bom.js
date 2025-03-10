@@ -90,51 +90,82 @@ router.post("/bom-pack", async (req, res) => {
     const errors = [];
 
     // Iterate through each pack_id
-    for (const pack_id of packs) {
+    for (const pack_code of packs) {
       try {
-        // Check if the pack_id exists and is not already used
-        const pack = await MaterialPack.findOne({ where: { pack_id } });
+        // Check if the pack_code exists and is not already used
+        const pack = await MaterialPack.findOne({
+          where: { pack_code: pack_code },
+        });
         if (!pack) {
-          errors.push({ pack_id, error: "Pack not found." });
+          errors.push({ pack_code, error: "Pack not found." });
           continue;
         }
         if (pack.isUsed) {
           errors.push({
-            pack_id,
+            pack_code,
             error: "This pack is already marked as used.",
           });
           continue;
         }
 
         // Create a new BomPack entry
-        const newPackIdOnBom = await BomPack.create({ bom_id, pack_id });
+        const newPackIdOnBom = await BomPack.create({
+          bom_id,
+          pack_id: pack.id,
+        });
 
         // Update MaterialPack to mark it as used
         await MaterialPack.update(
           { isUsed: true, updatedAt: new Date() },
-          { where: { pack_id } }
+          { where: { pack_code: pack_code } }
         );
 
         // Add success result
         results.push({
-          pack_id,
+          pack_code,
           message: "Pack added to BOM successfully.",
           data: newPackIdOnBom,
         });
       } catch (error) {
-        console.error(`Error processing pack_id ${pack_id}:`, error);
-        errors.push({ pack_id, error: "Failed to process this pack." });
+        console.error(`Error processing pack_code ${pack_code}:`, error);
+        errors.push({ pack_code, error: "Failed to process this pack." });
       }
     }
 
     // Send response
-    res.status(201).json({
-      message: "Processing completed.",
-      success: results,
-      failed: errors,
-    });
+    if (errors.length > 0 && results.length > 0) {
+      // Partial success, send 207 Multi-Status
+      res.status(207).json({
+        message: "Processing completed with some errors.",
+        success: results,
+        failed: errors,
+      });
+    } else if (results.length === 0) {
+      // No success, send 204 No Content
+      res.status(404).json({ error: "No packs added to BOM.", failed: errors });
+    } else {
+      // Full success, send 201 Created
+      res.status(201).json({
+        message: "All packs added to BOM successfully.",
+        success: results,
+      });
+    }
   } catch (error) {
     console.error("Error processing bom-pack:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const limit = req.query.limit || 5;
+    const response = await BomPack.findAll({
+      limit: limit,
+    });
+    const bomList = response.map((bomPack) => bomPack.toJSON());
+    res.send(bomList);
+  } catch (error) {
+    console.error("Error fetching bom-pack:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
