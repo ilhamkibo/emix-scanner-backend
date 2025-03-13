@@ -55,4 +55,31 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 3;
+
+    const response = await MaterialPack.findAll({
+      limit: limit,
+      include: [
+        {
+          model: sequelize.models.MaterialBatch,
+          as: "batch",
+          include: ["material"],
+        },
+      ],
+    });
+
+    if (!response) {
+      return res.status(404).json({ error: "Pack code not found" });
+    }
+
+    const packs = response.map((pack) => pack.toJSON());
+    return res.status(200).send(packs);
+  } catch (error) {
+    console.error("Error fetching packs:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 module.exports = router;

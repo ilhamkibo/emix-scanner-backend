@@ -25,7 +25,7 @@ router.get("/:bomCode", async (req, res) => {
       return res.status(404).json({ error: "Bom not found" });
     }
 
-    res.json(bomList);
+    return res.status(200).json(bomList);
   } catch (error) {
     console.error("Error fetching bom:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -158,12 +158,13 @@ router.post("/bom-pack", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const limit = req.query.limit || 5;
-    const response = await BomPack.findAll({
+    const limit = parseInt(req.query.limit) || 3;
+    const response = await BomList.findAll({
       limit: limit,
+      include: ["product"],
     });
     const bomList = response.map((bomPack) => bomPack.toJSON());
-    res.send(bomList);
+    res.status(200).send(bomList);
   } catch (error) {
     console.error("Error fetching bom-pack:", error);
     res.status(500).json({ error: "Internal Server Error" });

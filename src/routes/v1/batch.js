@@ -72,9 +72,29 @@ router.get("/:batchCode", async (req, res) => {
       return res.status(404).json({ error: "Batch not found" });
     }
 
-    res.json(batch);
+    return res.status(200).json(batch);
   } catch (error) {
     console.error("Error fetching batch:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 3;
+    const response = await MaterialBatch.findAll({
+      limit: limit,
+      include: ["material"],
+    });
+
+    if (!response) {
+      return res.status(404).json({ error: "Batch not found" });
+    }
+
+    const batches = response.map((batch) => batch.toJSON());
+    return res.status(200).send(batches);
+  } catch (error) {
+    console.error("Error fetching batches:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
